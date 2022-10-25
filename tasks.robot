@@ -10,6 +10,8 @@ Library             RPA.HTTP
 Library             RPA.Tables
 Library             RPA.PDF
 Library             RPA.Archive
+Library             RPA.Dialogs
+Library             RPA.Robocloud.Secrets
 
 
 *** Tasks ***
@@ -23,13 +25,16 @@ Order robots from RobotSpareBin Industries Inc
 
 *** Keywords ***
 Open the robot order website
-    Open Available Browser    https://robotsparebinindustries.com/#/robot-order
+    ${secret}=    Get Secret    roboSpareBin
+    Open Available Browser    ${secret}[siteLink]
 
 Close the pop-up
     Click Button When Visible    //button[@class="btn btn-dark"]
 
 Download and read the file
-    Download    https://robotsparebinindustries.com/orders.csv
+    Add text input    link    label=Please provide the link to csv file
+    ${result}=    Run dialog
+    Download    ${result}[link]
 
 Check order status
     FOR    ${i}    IN RANGE    100
